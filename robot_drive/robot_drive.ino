@@ -1,3 +1,4 @@
+
 int left_motor = 9;
 int right_motor = 11;
 int left_dir = 8;
@@ -5,6 +6,8 @@ int right_dir = 10;
 
 int mleft_sensor=2;
 int mright_sensor=3;
+
+int button_pin=7;
 
 int forward_speed = 200;
 int turn_speed = 150;
@@ -19,13 +22,17 @@ long right_target = 0;
 
 volatile bool stop_flag = false; 
 
+volatile bool button_pressed = false;
+volatile int button_debounce = 0;
+
 void lstep_interrupt();
 void rstep_interrupt();
 void forward(int unit);
 void backward(int unit);
-int digitalPinToInterrupt(int pint);
+//int digitalPinToInterrupt(int pint);
 void turn(int direction, int unit);
 void stop();
+void button_press();
 
 void setup()
 {
@@ -35,6 +42,10 @@ void setup()
 	pinMode(right_motor,OUTPUT);
 	pinMode(left_dir,OUTPUT);
 	pinMode(right_dir,OUTPUT);
+
+  pinMode(button_pin,INPUT);
+  pinMode(12,INPUT);
+  attachInterrupt(digitalPinToInterrupt(button_pin), button_press,FALLING);
 	
 	
 	attachInterrupt(digitalPinToInterrupt(mleft_sensor), lstep_interrupt, FALLING);
@@ -52,23 +63,36 @@ void loop()
 		switch(action){
 				case 1:
 					forward(Serial.parseInt());
+					Serial.println("elore");
+					Serial.println(left_target);
+					Serial.println(left_steps);
 					break;
 				case 2:
 					turn(Serial.parseInt(),Serial.parseInt());
 				case 3:
 					backward(Serial.parseInt());
 					break;
+        case 4:
+          stop_flag=true;
+          break;
 
 		}
 	}
 	
 	if(stop_flag){
 			stop();
+		Serial.println("stop");
 		stop_flag = false;
+    left_target=left_steps;
+    right_target = right_steps;
 	}
 	
-	//Serial.println(left_steps);
-	//Serial.println(right_steps);
+	if(button_pressed){
+	    Serial.println("button pressed");
+     Serial.println(button_debounce++);
+     button_pressed = false;
+     
+  }
 }
 
 void stop(){
@@ -90,7 +114,7 @@ void forward(int unit)
 	left_target = leftpos+unit;
 	right_target = rightpos+unit;
 	
-	//while(left_steps< leftpos+unit || right_steps < rightpos+unit){}
+	
 	
 	
 }
@@ -131,10 +155,7 @@ void turn(int direction, int unit)
 	left_target = leftpos+unit;
 	right_target = rightpos+unit;
 	
-	/*while(left_steps< leftpos+unit || right_steps < rightpos+unit){}
 	
-	analogWrite(left_motor,0);
-	analogWrite(right_motor,0);*/
 }
 
 void lstep_interrupt()
@@ -151,28 +172,10 @@ void rstep_interrupt()
 	stop_flag = right_steps > right_target;
 }
 
-int digitalPinToInterrupt(int pin)
+void button_press()
 {
-	//arduino uno
-	switch(pin){
-			case 2:
-				return 0;
-			case 3:
-				return 1;
-	}
-	
-	//arduino leonardo,yun
-	/*switch(pin){
-			case 3:
-				return 0;
-			case 2:
-				return 1;
-			case 0:
-				return 2;
-			case 1:
-				return 3;
-			case 7:
-				return 4;
-				
-	}*/
+  //button_debounce = button_debounce > 1000 ? 0 : ++button_debounce;
+  button_pressed = true;//button_debounce == 0;
 }
+
+
