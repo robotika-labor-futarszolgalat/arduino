@@ -1,0 +1,48 @@
+soros port sebesség : 9600 
+új sor legyen bekapcsolva
+kereséshez egy 'k' betűt kell küldeni, ha elsőre nem történik semmi többször el kell írni (nem tudom miért)
+
+így néz ki az output:
+
+Inquiry,T=7,COD=0
+7... 6... 5... 4... 3... 2... 1... 
+talált eszközök: 2
+
+BT nev: RNBT-6651
+BT jel: -44
+
+
+BT nev: GT-S5310
+BT jel: -68
+
+kereses vege
+----------------------------------
+
+
+Inquiry,T=7,COD=0
+7... 6... 5... 4... 3... 2... 1... 
+talált eszközök: 2
+
+BT nev: RNBT-6651
+BT jel: -44
+
+
+BT nev: GT-S5310
+BT jel: -73
+
+kereses vege
+----------------------------------
+
+
+Inquiry,T=7,COD=0
+7... 6... 5... 4... 3... 2... 1... 
+talált eszközök: 2
+
+BT nev: RNBT-6651
+BT jel: -45
+
+
+BT nev: GT-S5310
+BT jel: -68
+
+kereses vege
