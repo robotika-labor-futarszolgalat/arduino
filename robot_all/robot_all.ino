@@ -52,7 +52,7 @@ long right_target = 0;
 volatile bool stop_flag = false;
 
 volatile bool button_pressed = false;
-volatile int button_debounce = 0;
+volatile long debounce=0;
 
 void lstep_interrupt();
 void rstep_interrupt();
@@ -238,7 +238,6 @@ void loop()
   }
   if (button_pressed) {
     Serial.println("button pressed");
-    Serial.println(button_debounce++);
     button_pressed = false;
   }
 }
@@ -314,9 +313,11 @@ void rstep_interrupt()
 
 void button_press()
 {
-  button_debounce = button_debounce > 1000 ? 0 : ++button_debounce;
-  button_pressed = true;
-  button_debounce == 0;
+  if(millis() -500> debounce)
+  {
+    button_pressed = true;
+    debounce = millis();
+   }
 }
 
 void end_scan()
