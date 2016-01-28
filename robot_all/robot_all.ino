@@ -11,6 +11,7 @@ unsigned long time = 0;
 char charbuffer[50];
 int buffer_end = 0;
 boolean bluetooth_reading = false;
+boolean ready_to_send = false;
 int devices = 0;
 boolean processed = false;
 
@@ -104,7 +105,7 @@ void loop()
     time = millis();
     locate_beacons();
   }
-  if ((bt_names != "") && (bt_signals != ""))
+  if (ready_to_send && (bt_names != "") && (bt_signals != ""))
   {
      message += myip_port;
      message += "?";
@@ -119,6 +120,8 @@ void loop()
      message= "";
      bt_names = "";
      bt_signals = "";
+
+     ready_to_send = false;
   }
 
   if (Serial.available())
@@ -327,6 +330,7 @@ void end_scan()
   Serial.println();
   Serial.println();
   bluetooth_reading = false;
+  ready_to_send = true;
 }
 
 void locate_beacons()
