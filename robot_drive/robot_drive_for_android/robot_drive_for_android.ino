@@ -6,8 +6,11 @@ int right_dir = 10;
 int mleft_sensor = 2;
 int mright_sensor = 3;
 
+int gas = 12;
+
+
 int forward_speed = 200;
-int turn_speed = 150;
+int turn_speed = 100;
 
 volatile long left_steps = 0;
 volatile long right_steps = 0;
@@ -24,7 +27,7 @@ void lstep_interrupt();
 void rstep_interrupt();
 void forward(int unit);
 void backward(int unit);
-void turn(int direction, int unit);
+void turn(int directiona, int unit);
 void stop();
 void button_press();
 
@@ -49,15 +52,22 @@ void loop()
     int action = Serial.parseInt();
     switch (action) {
       case 1:
-        forward(200);
+        forward(100);
         break;
       case 2:
-        turn(Serial.parseInt(), 200);
+        turn(1, 5);
+        break;
       case 3:
-        backward(200);
+        turn(0, 5);
         break;
       case 4:
+        backward(100);
+        break;
+      case 5:
         stop_flag = true;
+        break;
+      case 6:
+        gassensor();
         break;
     }
   }
@@ -68,6 +78,18 @@ void loop()
     stop_flag = false;
     left_target = left_steps;
     right_target = right_steps;
+  }
+}
+
+void gassensor()
+{
+  if (digitalRead(gas))
+  {
+    Serial.println("1");
+  }
+  else
+  {
+    Serial.println("0");
   }
 }
 
@@ -105,15 +127,16 @@ void backward(int unit)
   right_target = rightpos + unit;
 }
 
-void turn(int direction, int unit)
+void turn(int directiona, int unit)
 {
   int leftpos = left_steps;
   int rightpos = right_steps;
 
-  if (direction) {
+  if (directiona) {
     digitalWrite(left_dir, 0);
     digitalWrite(right_dir, 1);
-  } else {
+  }
+  else {
     digitalWrite(left_dir, 1);
     digitalWrite(right_dir, 0);
   }
@@ -136,6 +159,3 @@ void rstep_interrupt()
   ++right_steps;
   stop_flag = right_steps > right_target;
 }
-
-
-
