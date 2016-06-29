@@ -49,14 +49,12 @@ void loop()
     int action = Serial.parseInt();
     switch (action) {
       case 1:
-        forward(Serial.parseInt());
-        Serial.println(left_target);
-        Serial.println(left_steps);
+        forward(200);
         break;
       case 2:
-        turn(Serial.parseInt(), Serial.parseInt());
+        turn(Serial.parseInt(), 200);
       case 3:
-        backward(Serial.parseInt());
+        backward(200);
         break;
       case 4:
         stop_flag = true;
